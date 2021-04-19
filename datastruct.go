@@ -1,6 +1,8 @@
 package leetcode
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // Definition for singly-linked list.
 type ListNode struct {
@@ -78,3 +80,50 @@ func visited(node *TreeNode) {
 			node.Val, node.Left.Val, node.Right.Val)
 	}
 }
+
+//golang中实现小根堆
+type IntHeap []int
+
+func (h IntHeap) Len() int           { return len(h) }
+func (h IntHeap) Less(i, j int) bool { return h[i] < h[j] }
+func (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *IntHeap) Push(x interface{}) {
+	*h = append(*h, x.(int))
+}
+func (h *IntHeap) Pop() interface{} {
+	old := *h
+	n := len(old)
+	x := old[n-1]
+	*h = old[:n-1]
+	return x
+}
+
+//实现最小排序
+type Minnum []int
+
+func (n Minnum) Len() int { return len(n) }
+func (n Minnum) Less(i, j int) bool {
+	ico, jco := 1, 1
+
+	if n[i] == 0 {
+		jco = 10
+	} else {
+		for ni := n[i]; ni > 0; ni /= 10 {
+			jco *= 10
+		}
+	}
+
+	if n[j] == 0 {
+		ico = 10
+	} else {
+		for nj := n[j]; nj > 0; nj /= 10 {
+			ico *= 10
+		}
+	}
+
+	if n[i]*ico+n[j] < n[j]*jco+n[i] {
+		return true
+	}
+	return false
+}
+func (n Minnum) Swap(i, j int) { n[i], n[j] = n[j], n[i] }

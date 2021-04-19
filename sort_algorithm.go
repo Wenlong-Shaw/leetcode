@@ -154,3 +154,42 @@ func merge(left []int, right []int) []int {
 
 	return result
 }
+
+//自下而上的迭代实现
+func MergeSort2(nums []int) []int {
+	var next, leftMin, leftMax, rightMin, rightMax int
+	n := len(nums)
+	tmp := make([]int, n)
+	for i := 1; i < n; i *= 2 {
+		for leftMin = 0; leftMin < n-i; leftMin = rightMax {
+			rightMin, leftMax = leftMin+i, leftMin+i
+			rightMax = leftMax + i
+			if rightMax > n {
+				rightMax = n
+			}
+			next = 0
+			for leftMin < leftMax && rightMin < rightMax {
+				if nums[leftMin] < nums[rightMin] {
+					tmp[next] = nums[leftMin]
+					next++
+					leftMin++
+				} else {
+					tmp[next] = nums[rightMin]
+					next++
+					leftMin++
+				}
+			}
+			for leftMin < leftMax {
+				rightMin--
+				leftMax--
+				nums[rightMin] = nums[leftMax]
+			}
+			for next > 0 {
+				rightMin--
+				next--
+				nums[rightMin] = tmp[next]
+			}
+		}
+	}
+	return nums
+}
