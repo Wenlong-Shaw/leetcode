@@ -1,6 +1,7 @@
 package leetcode
 
 import (
+	"container/list"
 	"fmt"
 )
 
@@ -48,11 +49,11 @@ func BinaryTreeConstructor(nums []int) *TreeNode {
 }
 
 func BinaryTreeTraverse(node *TreeNode) {
-	defer func() {
-		if r := recover(); r != nil {
-			// fmt.Println("Panic:", r)
-		}
-	}()
+	// defer func() {
+	// 	if r := recover(); r != nil {
+	// 		// fmt.Println("Panic:", r)
+	// 	}
+	// }()
 	if node == nil {
 		return
 	}
@@ -71,6 +72,7 @@ func visited(node *TreeNode) {
 	if node.Left == nil {
 		fmt.Printf("node value is %v, left Child is %v, right Child is %v.\n\r",
 			node.Val, node.Left, node.Right)
+		return
 	}
 	if node.Right == nil {
 		fmt.Printf("node value is %v, left Child is %v, right Child is %v.\n\r",
@@ -81,21 +83,28 @@ func visited(node *TreeNode) {
 	}
 }
 
-//golang中实现小根堆
-type IntHeap []int
-
-func (h IntHeap) Len() int           { return len(h) }
-func (h IntHeap) Less(i, j int) bool { return h[i] < h[j] }
-func (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
-func (h *IntHeap) Push(x interface{}) {
-	*h = append(*h, x.(int))
-}
-func (h *IntHeap) Pop() interface{} {
-	old := *h
-	n := len(old)
-	x := old[n-1]
-	*h = old[:n-1]
-	return x
+//满二叉树的广度优先遍历
+func BTreeBFS(node *TreeNode) {
+	if node == nil {
+		return
+	}
+	nodeList := list.New()
+	nodeList.PushBack(node)
+	for nodeList.Len() > 0 {
+		curNode := nodeList.Front()
+		nodeList.Remove(curNode)
+		cn, ok := curNode.Value.(*TreeNode)
+		if !ok {
+			return
+		}
+		if cn.Left != nil {
+			nodeList.PushBack(cn.Left)
+		}
+		if cn.Right != nil {
+			nodeList.PushBack(cn.Right)
+		}
+		visited(cn)
+	}
 }
 
 //实现最小排序
