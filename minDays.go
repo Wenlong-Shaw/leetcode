@@ -1,5 +1,7 @@
 package leetcode
 
+import "math"
+
 /*
 * 1482. 制作 m 束花所需的最少天数
 * 给你一个整数数组 bloomDay，以及两个整数 m 和 k 。
@@ -51,13 +53,42 @@ package leetcode
 链接：https://leetcode-cn.com/problems/minimum-number-of-days-to-make-m-bouquets
 */
 func minDays(bloomDay []int, m int, k int) int {
-	if m*k > len(bloomDay) {
+	n, min, max, mid := len(bloomDay), math.MaxInt64, 0, 0
+	if m*k > n {
 		return -1
 	}
-
-	return 0
+	//选出最大,最小的开花日数
+	for i := 0; i < n; i++ {
+		if bloomDay[i] < min {
+			min = bloomDay[i]
+		}
+		if bloomDay[i] > max {
+			max = bloomDay[i]
+		}
+	}
+	for min < max {
+		mid = (min + max) / 2
+		if canmake(bloomDay, mid, m, k) {
+			max = mid
+		} else {
+			min = mid + 1
+		}
+	}
+	return mid
 }
 
-func canmake(bloomDay []int, days int, m int, k int) bool {
-	return false
+func canmake(bloomDay []int, maxdays int, m int, k int) bool {
+	flowers, bouquets := 0, 0
+	for i := range bloomDay {
+		if bloomDay[i] <= maxdays {
+			flowers++
+			if flowers == k { //达到了一束花的数量，bouquets+1，并且flowers清零
+				bouquets++
+				flowers = 0
+			}
+		} else { //发生不连续，立即将flowers重置
+			flowers = 0
+		}
+	}
+	return bouquets >= m
 }
