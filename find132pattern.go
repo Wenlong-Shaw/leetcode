@@ -1,5 +1,7 @@
 package leetcode
 
+import "math"
+
 /*
 * 456. 132 模式
 * 给你一个整数数组 nums ，数组中共有 n 个整数。132 模式的子序列 由三个整数 nums[i]、nums[j] 和 nums[k] 组成，
@@ -13,5 +15,43 @@ package leetcode
 
 //时间复杂度为O(n)，枚举1，需要借助单调栈
 func find132pattern(nums []int) bool {
+	var s Stack
+	n := len(nums)
+	// arr := make([]int, n)
+	k := math.MinInt64
+	for i := n - 1; i >= 0; i-- {
+		if nums[i] < k {
+			return true
+		}
+		for !s.IsEmpty() && nums[s.Top()] < nums[i] { //! 注意是严格Pop出较小数
+			//TODO: 记录Pop出的2的值，用于下次比较
+			k = nums[s.Pop()]
+		}
+		if nums[i] > k {
+			s.Push(i)
+		}
+	}
+	return false
+}
+
+//* 官方解，使用数组切片，代替构建Stack数据结构。
+//* 思路和步骤同上。
+func find132pattern1(nums []int) bool {
+	n := len(nums)
+	candidateK := []int{nums[n-1]}
+	maxK := math.MinInt64
+
+	for i := n - 2; i >= 0; i-- {
+		if nums[i] < maxK {
+			return true
+		}
+		for len(candidateK) > 0 && nums[i] > candidateK[len(candidateK)-1] {
+			maxK = candidateK[len(candidateK)-1]
+			candidateK = candidateK[:len(candidateK)-1]
+		}
+		if nums[i] > maxK {
+			candidateK = append(candidateK, nums[i])
+		}
+	}
 	return false
 }
