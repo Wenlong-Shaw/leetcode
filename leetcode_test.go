@@ -2,6 +2,7 @@ package leetcode_test
 
 import (
 	"fmt"
+	"leetcode"
 	"testing"
 )
 
@@ -48,7 +49,9 @@ func TestProject(t *testing.T) {
 
 	// leetcode.QuickSort(nums)
 	// timeSpend := time.Now().Sub(timestart)
-	fmt.Println(nums)
-	fmt.Println(nums)
+	// fmt.Println(nums)
+	nums = []int{7, 2, 5, 3, 11, 9, 1}
+	ans := leetcode.MonotoneStack(nums)
+	fmt.Println(ans)
 
 }
