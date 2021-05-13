@@ -11,6 +11,28 @@ type ListNode struct {
 	Next *ListNode
 }
 
+// Definition for stack
+type Stack []int
+
+func (s Stack) Len() int      { return len(s) }
+func (s Stack) IsEmpty() bool { return len(s) == 0 }
+func (s *Stack) Push(i int)   { *s = append(*s, i) }
+func (s Stack) Top() int {
+	if s.IsEmpty() {
+		return -1
+	}
+	t := s.Len() - 1
+	return s[t]
+}
+func (s *Stack) Pop() int {
+	if s.IsEmpty() {
+		return -1
+	}
+	top := (*s)[s.Len()-1]
+	*s = (*s)[:s.Len()-1]
+	return top
+}
+
 //Definition for a binary tree node.
 type TreeNode struct {
 	Val   int
