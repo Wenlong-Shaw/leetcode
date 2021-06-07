@@ -47,3 +47,27 @@ func sumNumbers(root *TreeNode) int {
 	sum(root, "")
 	return ans
 }
+
+func sumNumbers_1(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	ans := 0
+	var sum func(*TreeNode, int)
+	sum = func(node *TreeNode, sums int) {
+		if node.Left == nil && node.Right == nil {
+			sums = sums*10 + node.Val
+			ans += sums
+			return
+		}
+		sums = sums*10 + node.Val
+		if node.Left != nil {
+			sum(node.Left, sums)
+		}
+		if node.Right != nil {
+			sum(node.Right, sums)
+		}
+	}
+	sum(root, 0)
+	return ans
+}
