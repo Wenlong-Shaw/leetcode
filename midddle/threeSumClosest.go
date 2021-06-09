@@ -51,7 +51,7 @@ func threeSumClosest(nums []int, target int) int {
 
 func abs(a int) int {
 	if a < 0 {
-		return -a
+		return -1 * a
 	}
 	return a
 }
