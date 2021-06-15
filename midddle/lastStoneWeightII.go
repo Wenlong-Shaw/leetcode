@@ -30,8 +30,37 @@ package leetcode
 * 1 <= stones.length <= 30
 * 1 <= stones[i] <= 100
 */
-
+//TODO: 问题可以转化为在stones的各个元素前添加 “+” 或 “-” 最后使得表达式的值最小为多少？
+//* 则转化为了最基本的01背包问题，将stones的元素和分为 SumA和SumB两部分，则可知当 SumA -SumB = 0时表达式结果最小，
+//* 即 SumA == SumB == Sum/2 时，结果最小。即可以转化为，是否选择将 stones[i] 放入容量为Sum/2的背包中，
+//* 使得背包中的stones的重量和最接近Sum/2。由于是求剩下的最小的值，故最小值结果则为：abs(Sum - f[n][Sum/2] - f[n][Sum/2])
 func lastStoneWeightII(stones []int) int {
+	sum, n := 0, len(stones)
+	for i := 0; i < n; i++ {
+		sum += stones[i]
+	}
+	t := sum / 2
+	f := make([][]int, n+1)
+	for i := 0; i <= n; i++ {
+		f[i] = make([]int, t+1)
+	}
+
+	for i := 1; i < n+1; i++ {
+		for j := 0; j <= t; j++ {
+			if j < stones[i-1] {
+				f[i][j] = f[i-1][j]
+				continue
+			}
+			f[i][j] = max(f[i-1][j], f[i-1][j-stones[i-1]]+stones[i-1])
+		}
+	}
+	return abs(sum - 2*f[n][t])
+}
+
+//* 一维数组优化空间。
+//TODO: 由于 f[i][j] 状态值依赖于  f[i-1][j] 的状态值,可将其降为1维数组遍历，
+//TODO: 其次，由于其需要获取上一次的 f[i-1][j-stones[i-1]] 的值，故应该从高位依次更新至低位，免得覆盖了f[i-1]的值。
+func lastStoneWeightII_1(stones []int) int {
 	n := len(stones)
 	sum := 0
 	for i := 0; i < n; i++ {
